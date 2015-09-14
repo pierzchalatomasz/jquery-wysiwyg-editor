@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Page Title</title>
+  <style>
+    iframe {
+      border: none;
+      outline: none;
+      position: relative;
+      //width: 100%;
+      background: #fff;
+      //padding: 15px;
+    }
+  </style>
+  <link rel="stylesheet" href="css/jquery.wysiwygEditor.css">
+</head>
+<body>
+
+  <h1>This is a Heading</h1>
+  <p>This is a paragraph.</p>
+
+  <div class="markdownWYSIWYG-screen">
+    <div class="markdownWYSIWYG-toolbar">
+      <button class="markdownWYSIWYG-heading">Heading</button>
+    </div>
+  </div>
+
+  <div style="width: 600px; display: none;">
+    <div class="wysiwygEditor-wrapper" style="background: #f8f8f8; border: 1px solid #e1e1e1;">
+      <div class="wysiwygEditor-toolbar" style="//background: #f5f5f5; padding: 15px;">
+        <a href class="wysiwygEditor-bold">
+          Bold
+        </a>
+        <a href class="wysiwygEditor-bold">
+          Italic
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <textarea class="wysiwyg-editor"></textarea>
+
+  <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+  <script src="js/jquery.wysiwygEditor.js"></script>
+  <script type="text/javascript">
+    $('.wysiwyg-editor').wysiwygEditor();
+  </script>
+</body>
+</html>
