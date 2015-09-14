@@ -6,14 +6,20 @@ $.fn.wysiwygEditor = function() {
   //instance.attr('wysiwygEditor-id', );
 
   var markup = '';
-  markup += '<div class="wysiwygEditor-wrapper" style="background: #f8f8f8; border: 1px solid #e1e1e1; width: 600px;">';
-  markup +=   '<div class="wysiwygEditor-toolbar" style="//background: #f5f5f5; padding: 15px;">';
-  markup +=     '<a href class="wysiwygEditor-bold">';
-  markup +=       '<i class="fa fa-bold"></i>';
-  markup +=     '</a>';
-  markup +=     '<a href class="wysiwygEditor-bold">';
-  markup +=       '<i class="fa fa-italic"></i>';
-  markup +=     '</a>';
+  markup += '<div class="wysiwygEditor-wrapper">';
+  markup +=   '<div class="wysiwygEditor-toolbar">';
+  markup +=     '<ul>';
+  markup +=       '<li>';
+  markup +=         '<a href class="wysiwygEditor-bold">';
+  markup +=           '<i class="fa fa-bold"></i>';
+  markup +=        '</a>';
+  markup +=       '</li>';
+  markup +=       '<li>';
+  markup +=         '<a href class="wysiwygEditor-bold">';
+  markup +=           '<i class="fa fa-italic"></i>';
+  markup +=         '</a>';
+  markup +=       '</li>';
+  markup +=     '</ul>';
   markup +=   '</div>';
   markup +=   '<div class="wysiwygEditor-editArea">';
   markup +=     '<iframe id="randomID""></iframe>';
