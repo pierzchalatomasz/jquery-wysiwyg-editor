@@ -2,8 +2,11 @@ $.fn.wysiwygEditor = function() {
 
   'use strict'
 
-  var instance = this;
+  var textarea = this;
 
+  var randomID = 'wysiwygEditor-' + Math.floor(Math.random() * 1000000);
+
+  // Actions array
   var actions = [
     {
       title: 'undo'
@@ -14,10 +17,12 @@ $.fn.wysiwygEditor = function() {
       break: true
     },
     {
-      title: 'bold'
+      title: 'bold',
+      nodeName: 'B'
     },
     {
       title: 'italic',
+      nodeName: 'I',
       break: true
     },
     {
@@ -47,6 +52,12 @@ $.fn.wysiwygEditor = function() {
       break: true
     },
     {
+      title: 'link',
+      action: 'createLink',
+      value: true,
+      desc: 'Insert link URL'
+    },
+    {
       title: 'image',
       action: 'insertImage',
       value: true,
@@ -54,7 +65,7 @@ $.fn.wysiwygEditor = function() {
     }
   ];
 
-  // Get action// Get Action
+  // Get action
   Object.prototype.getAction = function() {
     if(typeof(this.action) != 'undefined')
       return this.action;
@@ -63,18 +74,19 @@ $.fn.wysiwygEditor = function() {
   };
 
   // Hide original textarea
-  instance.css('display', 'none');
+  textarea.css('display', 'none');
+  textarea.addClass(randomID);
 
   // Create markup
   var markup = '';
-  markup += '<div class="wysiwygEditor-wrapper">';
+  markup += '<div id="' + randomID + '" class="wysiwygEditor-wrapper">';
   markup +=   '<div class="wysiwygEditor-toolbar">';
   markup +=     '<ul>';
 
   // Display all tools
   $.each(actions, function(i) {
     markup +=       '<li>';
-    markup +=         '<a href class="wysiwygEditor-' + actions[i].title + '">';
+    markup +=         '<a href class="wysiwygEditor-' + actions[i].title + '" title="' + actions[i].title.toUpperCase() + '">';
     markup +=           '<i class="fa fa-' + actions[i].title + '"></i>';
     markup +=        '</a>';
     markup +=       '</li>';
@@ -88,30 +100,66 @@ $.fn.wysiwygEditor = function() {
   markup +=     '</ul>';
   markup +=   '</div>';
   markup +=   '<div class="wysiwygEditor-editArea">';
-  markup +=     '<iframe id="randomID" height="300"></iframe>';
+  markup +=     '<iframe height="300"></iframe>';
+  markup +=   '</div>';
+  markup +=   '<div class="wysiwygEditor-footer">';
+  markup +=   'HTML';
   markup +=   '</div>';
   markup += '</div>';
 
-  // Create new iframe
-  instance.before(markup);
+  // Create new wysiwygEditor
+  textarea.before(markup);
 
-  var iframe = instance.parents().find('#randomID');
+  var iframe = $('#' + randomID).find('iframe');
   var editArea = iframe[0].contentDocument;
 
+  // Set iframe width
   iframe.width(iframe.parent().width());
+  $(window).resize(function() {
+    iframe.width(iframe.parent().width());
+  });
+
+  // Set iframe body to editable
   editArea.body.contentEditable = true;
 
+  // Copy data from textarea to iframe
+  $(editArea.body).html(textarea.val());
+
+  // Bind click events for toolbar
   $.each(actions, function(i) {
-    instance.parents().find('.wysiwygEditor-' + actions[i].title).bind('click', function(e) {
+    $('#' + randomID).find('.wysiwygEditor-' + actions[i].title).bind('click', function(e) {
       e.preventDefault();
       if(typeof(actions[i].value) != 'undefined')
         editArea.execCommand(actions[i].getAction(), false, prompt(actions[i].desc));
       else
         editArea.execCommand(actions[i].getAction(), false, null);
+      console.log(actions[i].getAction());
+      editArea.body.focus();
     });
   });
 
-  console.log(document);
+  // Trigger contentChanged
+  $.each(['click', 'keyup'], function() {
+    $(editArea.body).bind(this, function(e) {
+      if($(this).html() != textarea.val())
+        $(this).trigger('contentChanged');
+
+      // Update footer element indicator
+      var footerElementIndicator = '';
+      var elements = $(editArea.getSelection().anchorNode).parents();
+      for(var i = elements.length - 1; i >= 0; i--) {
+        footerElementIndicator += elements[i].nodeName;
+        if(i != 0)
+          footerElementIndicator+= ' &raquo; ';
+      }
+      $('#' + randomID).find('.wysiwygEditor-footer').html(footerElementIndicator);
+    });
+  });
+
+  // Textarea synchronization
+  $(editArea.body).on('contentChanged', function() {
+    textarea.val($(this).html());
+  });
 
   return this;
 }

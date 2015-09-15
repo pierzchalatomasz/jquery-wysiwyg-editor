@@ -2,7 +2,14 @@
 <html>
 <head>
   <title>Page Title</title>
+  <link rel="stylesheet/less" href="css/jquery.wysiwygEditor.less">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,800" rel="stylesheet" type="text/css">
   <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.6em;
+    }
     iframe {
       border: none;
       outline: none;
@@ -12,14 +19,19 @@
       //padding: 15px;
     }
   </style>
-  <link rel="stylesheet/less" href="css/jquery.wysiwygEditor.less">
 </head>
-<body>
+<body style="background: #219fd1; color: #fff;">
 
-  <h1>This is a Heading</h1>
-  <p>This is a paragraph.</p>
+  <div style="padding: 70px 0;">
+    <div style="text-align: center">
+      <h1><span style="font-weight: 300;">wysiwyg</span>Editor</h1>
+      <p>Simple jQuery HTML5 WYSIWYG editor.</p>
+    </div>
 
-  <textarea class="wysiwyg-editor"></textarea>
+    <div style="max-width: 600px; margin: 0 auto;">
+      <textarea class="wysiwyg-editor">Hello World!</textarea>
+    </div>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.js"></script>
   <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
