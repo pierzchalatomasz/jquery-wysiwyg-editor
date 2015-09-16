@@ -22,24 +22,31 @@ $.fn.wysiwygEditor = function() {
     },
     {
       title: 'italic',
-      nodeName: 'I',
+      nodeName: 'I'
+    },
+    {
+      title: 'underline',
       break: true
     },
     {
       title: 'align-left',
-      action: 'justifyLeft'
+      action: 'justifyLeft',
+      nodeName: 'left'
     },
     {
       title: 'align-center',
-      action: 'justifyCenter'
+      action: 'justifyCenter',
+      nodeName: 'center'
     },
     {
       title: 'align-right',
-      action: 'justifyRight'
+      action: 'justifyRight',
+      nodeName: 'right'
     },
     {
       title: 'align-justify',
       action: 'justifyFull',
+      nodeName: 'justify',
       break: true
     },
     {
@@ -54,6 +61,7 @@ $.fn.wysiwygEditor = function() {
     {
       title: 'link',
       action: 'createLink',
+      nodeName: 'A',
       value: true,
       desc: 'Insert link URL'
     },
@@ -61,7 +69,47 @@ $.fn.wysiwygEditor = function() {
       title: 'image',
       action: 'insertImage',
       value: true,
-      desc: 'Insert image URL'
+      desc: 'Insert image URL',
+      newRow: true
+    },
+    {
+      title: 'copy'
+    },
+    {
+      title: 'paste',
+      break: true
+    },
+    {
+      title: 'font'
+    },
+    {
+      title: 'text-height'
+    },
+    {
+      title: 'square',
+      action: 'foreColor',
+      value: true,
+      desc: 'Choose the color',
+      break: true
+    },
+    {
+      title: 'header',
+      action: 'formatBlock',
+      value: true,
+      desc: 'Which heading? H1, H2, H3, H4, H5, H6'
+    },
+    {
+      title: 'paragraph'
+    },
+    {
+      title: 'minus',
+      break: true
+    },
+    {
+      title: 'subscript'
+    },
+    {
+      title: 'superscript'
     }
   ];
 
@@ -95,6 +143,13 @@ $.fn.wysiwygEditor = function() {
     if(typeof(actions[i].break) != 'undefined') {
       markup +=     '<li class="break">|</li>'
     }
+
+    // New row
+    if(typeof(actions[i].newRow) != 'undefined') {
+      markup +=     '</ul>';
+      markup +=     '<div style="height: 1px; background: #e1e1e1; margin: 10px 0;"></div>';
+      markup +=     '<ul>';
+    }
   });
 
   markup +=     '</ul>';
@@ -120,7 +175,16 @@ $.fn.wysiwygEditor = function() {
   });
 
   // Set iframe body to editable
+  $(editArea).designMode = 'on';
   $(editArea.body).attr('contenteditable', true); // @not working Firefox
+
+  $(editArea.head).append('<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,800" rel="stylesheet" type="text/css">');
+
+  // Iframe body styles
+  $(editArea.body).css('padding', '15px');
+  $(editArea.body).css('font-family', 'Open Sans, sans-serif');
+  $(editArea.body).css('font-size', '13px');
+  $(editArea.body).css('line-height', '1.6em');
 
   // Copy data from textarea to iframe
   $(editArea.body).html(textarea.val());
@@ -134,6 +198,10 @@ $.fn.wysiwygEditor = function() {
         editArea.execCommand(actions[i].getAction(), false, prompt(actions[i].desc));
       else
         editArea.execCommand(actions[i].getAction(), false, null);
+
+      $(this).toggleClass('action-active');
+
+      backlightActiveTools($(editArea.getSelection().anchorNode).parents());
     });
   });
 
@@ -158,7 +226,7 @@ $.fn.wysiwygEditor = function() {
       $('#' + randomID).find('.wysiwygEditor-footer').html(footerElementIndicator);
       // console.log(footerElementIndicator.split(' &raquo; '));
 
-      backlightActiveTools(footerElementIndicator.split(' &raquo; '));
+      backlightActiveTools(elements);
     });
   });
 
@@ -172,7 +240,11 @@ $.fn.wysiwygEditor = function() {
       var action = this;
       var match = false;
       $.each(elements, function() {
-        if(typeof(action.nodeName) != 'undefined' && action.nodeName === this)
+        var nodeName = this.nodeName;
+        // Align property style name
+        if(this.nodeName === 'DIV')
+          nodeName = this.style.textAlign;
+        if(typeof(action.nodeName) != 'undefined' && action.nodeName === nodeName)
           match = true;
       });
       if(match)
