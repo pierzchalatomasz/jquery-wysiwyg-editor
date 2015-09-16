@@ -100,7 +100,7 @@ $.fn.wysiwygEditor = function() {
   markup +=     '</ul>';
   markup +=   '</div>';
   markup +=   '<div class="wysiwygEditor-editArea">';
-  markup +=     '<iframe height="300"></iframe>';
+  markup +=     '<iframe src="about:blank" height="300"></iframe>';
   markup +=   '</div>';
   markup +=   '<div class="wysiwygEditor-footer">';
   markup +=   'HTML';
@@ -120,7 +120,7 @@ $.fn.wysiwygEditor = function() {
   });
 
   // Set iframe body to editable
-  editArea.body.contentEditable = true;
+  $(editArea.body).attr('contenteditable', true); // @not working Firefox
 
   // Copy data from textarea to iframe
   $(editArea.body).html(textarea.val());
@@ -129,13 +129,16 @@ $.fn.wysiwygEditor = function() {
   $.each(actions, function(i) {
     $('#' + randomID).find('.wysiwygEditor-' + actions[i].title).bind('click', function(e) {
       e.preventDefault();
+      editArea.body.focus();
       if(typeof(actions[i].value) != 'undefined')
         editArea.execCommand(actions[i].getAction(), false, prompt(actions[i].desc));
       else
         editArea.execCommand(actions[i].getAction(), false, null);
-      console.log(actions[i].getAction());
-      editArea.body.focus();
     });
+  });
+
+  $('.wysiwygEditor-toolbar').bind('mouseover', function() {
+    editArea.body.blur();
   });
 
   // Trigger contentChanged
@@ -153,6 +156,9 @@ $.fn.wysiwygEditor = function() {
           footerElementIndicator+= ' &raquo; ';
       }
       $('#' + randomID).find('.wysiwygEditor-footer').html(footerElementIndicator);
+      // console.log(footerElementIndicator.split(' &raquo; '));
+
+      backlightActiveTools(footerElementIndicator.split(' &raquo; '));
     });
   });
 
@@ -160,6 +166,21 @@ $.fn.wysiwygEditor = function() {
   $(editArea.body).on('contentChanged', function() {
     textarea.val($(this).html());
   });
+
+  function backlightActiveTools(elements) {
+    $.each(actions, function() {
+      var action = this;
+      var match = false;
+      $.each(elements, function() {
+        if(typeof(action.nodeName) != 'undefined' && action.nodeName === this)
+          match = true;
+      });
+      if(match)
+        $('#' + randomID).find('.wysiwygEditor-' + action.title).addClass('action-active');
+      else
+        $('#' + randomID).find('.wysiwygEditor-' + action.title).removeClass('action-active');
+    });
+  }
 
   return this;
 }
