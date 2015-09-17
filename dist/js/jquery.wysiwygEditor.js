@@ -1,3 +1,113 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var actions = [
+  {
+    title: 'undo'
+  },
+  {
+    title: 'repeat',
+    action: 'redo',
+    break: true
+  },
+  {
+    title: 'bold',
+    nodeName: 'B'
+  },
+  {
+    title: 'italic',
+    nodeName: 'I'
+  },
+  {
+    title: 'underline',
+    break: true
+  },
+  {
+    title: 'align-left',
+    action: 'justifyLeft',
+    nodeName: 'left'
+  },
+  {
+    title: 'align-center',
+    action: 'justifyCenter',
+    nodeName: 'center'
+  },
+  {
+    title: 'align-right',
+    action: 'justifyRight',
+    nodeName: 'right'
+  },
+  {
+    title: 'align-justify',
+    action: 'justifyFull',
+    nodeName: 'justify',
+    break: true
+  },
+  {
+    title: 'list-ol',
+    action: 'insertOrderedList'
+  },
+  {
+    title: 'list-ul',
+    action: 'insertUnorderedList',
+    break: true
+  },
+  {
+    title: 'link',
+    action: 'createLink',
+    nodeName: 'A',
+    value: true,
+    desc: 'Insert link URL'
+  },
+  {
+    title: 'image',
+    action: 'insertImage',
+    value: true,
+    desc: 'Insert image URL',
+    newRow: true
+  },
+  {
+    title: 'copy'
+  },
+  {
+    title: 'paste',
+    break: true
+  },
+  {
+    title: 'font'
+  },
+  {
+    title: 'text-height'
+  },
+  {
+    title: 'square',
+    action: 'foreColor',
+    value: true,
+    desc: 'Choose the color',
+    break: true
+  },
+  {
+    title: 'header',
+    action: 'formatBlock',
+    value: true,
+    desc: 'Which heading? H1, H2, H3, H4, H5, H6'
+  },
+  {
+    title: 'paragraph'
+  },
+  {
+    title: 'minus',
+    break: true
+  },
+  {
+    title: 'subscript'
+  },
+  {
+    title: 'superscript'
+  }
+];
+
+module.exports = actions;
+
+},{}],2:[function(require,module,exports){
 $.fn.wysiwygEditor = function() {
 
   'use strict'
@@ -7,111 +117,7 @@ $.fn.wysiwygEditor = function() {
   var randomID = 'wysiwygEditor-' + Math.floor(Math.random() * 1000000);
 
   // Actions array
-  var actions = [
-    {
-      title: 'undo'
-    },
-    {
-      title: 'repeat',
-      action: 'redo',
-      break: true
-    },
-    {
-      title: 'bold',
-      nodeName: 'B'
-    },
-    {
-      title: 'italic',
-      nodeName: 'I'
-    },
-    {
-      title: 'underline',
-      break: true
-    },
-    {
-      title: 'align-left',
-      action: 'justifyLeft',
-      nodeName: 'left'
-    },
-    {
-      title: 'align-center',
-      action: 'justifyCenter',
-      nodeName: 'center'
-    },
-    {
-      title: 'align-right',
-      action: 'justifyRight',
-      nodeName: 'right'
-    },
-    {
-      title: 'align-justify',
-      action: 'justifyFull',
-      nodeName: 'justify',
-      break: true
-    },
-    {
-      title: 'list-ol',
-      action: 'insertOrderedList'
-    },
-    {
-      title: 'list-ul',
-      action: 'insertUnorderedList',
-      break: true
-    },
-    {
-      title: 'link',
-      action: 'createLink',
-      nodeName: 'A',
-      value: true,
-      desc: 'Insert link URL'
-    },
-    {
-      title: 'image',
-      action: 'insertImage',
-      value: true,
-      desc: 'Insert image URL',
-      newRow: true
-    },
-    {
-      title: 'copy'
-    },
-    {
-      title: 'paste',
-      break: true
-    },
-    {
-      title: 'font'
-    },
-    {
-      title: 'text-height'
-    },
-    {
-      title: 'square',
-      action: 'foreColor',
-      value: true,
-      desc: 'Choose the color',
-      break: true
-    },
-    {
-      title: 'header',
-      action: 'formatBlock',
-      value: true,
-      desc: 'Which heading? H1, H2, H3, H4, H5, H6'
-    },
-    {
-      title: 'paragraph'
-    },
-    {
-      title: 'minus',
-      break: true
-    },
-    {
-      title: 'subscript'
-    },
-    {
-      title: 'superscript'
-    }
-  ];
+  var actions = require('./actions')
 
   // Get action
   Object.prototype.getAction = function() {
@@ -256,3 +262,5 @@ $.fn.wysiwygEditor = function() {
 
   return this;
 }
+
+},{"./actions":1}]},{},[2]);
