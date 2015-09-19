@@ -138,6 +138,40 @@ module.exports = function(element, callback) {
 }
 
 },{}],4:[function(require,module,exports){
+// iframeSettings
+exports.setAttributes = function(editArea) {
+
+  $(editArea).designMode = 'on';
+  $(editArea.body).attr('contenteditable', true);
+
+};
+
+exports.setStylesheet = function(editArea) {
+
+  $(editArea.head).append('<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,800" rel="stylesheet" type="text/css">');
+
+};
+
+exports.setCss = function(editArea) {
+
+  $(editArea.body).css('padding', '15px');
+  $(editArea.body).css('font-family', 'Open Sans, sans-serif');
+  $(editArea.body).css('font-size', '13px');
+  $(editArea.body).css('line-height', '1.6em');
+
+}
+
+exports.setWidth = function(iframe) {
+
+  // Set iframe width
+  iframe.width(iframe.parent().width());
+  $(window).resize(function() {
+    iframe.width(iframe.parent().width());
+  });
+
+};
+
+},{}],5:[function(require,module,exports){
 $.fn.wysiwygEditor = function() {
 
   'use strict'
@@ -148,6 +182,7 @@ $.fn.wysiwygEditor = function() {
   var actions = require('./actions')
   var markup = require('./markup');
   var iframeLoaded = require('./iframeLoaded');
+  var iframeSettings = require('./iframeSettings');
   var getAction = require('./getAction');
 
   // Hide original textarea
@@ -164,22 +199,14 @@ $.fn.wysiwygEditor = function() {
     var editArea = iframe[0].contentDocument;
 
     // Set iframe width
-    iframe.width(iframe.parent().width());
-    $(window).resize(function() {
-      iframe.width(iframe.parent().width());
-    });
+    iframeSettings.setWidth(iframe);
 
     // Set iframe body to editable
-    $(editArea).designMode = 'on';
-    $(editArea.body).attr('contenteditable', true); // @not working Firefox
-
-    $(editArea.head).append('<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,800" rel="stylesheet" type="text/css">');
+    iframeSettings.setAttributes(editArea);
 
     // Iframe body styles
-    $(editArea.body).css('padding', '15px');
-    $(editArea.body).css('font-family', 'Open Sans, sans-serif');
-    $(editArea.body).css('font-size', '13px');
-    $(editArea.body).css('line-height', '1.6em');
+    iframeSettings.setStylesheet(editArea);
+    iframeSettings.setCss(editArea);
 
     // Copy data from textarea to iframe
     $(editArea.body).html(textarea.val());
@@ -251,7 +278,7 @@ $.fn.wysiwygEditor = function() {
   return this;
 }
 
-},{"./actions":1,"./getAction":2,"./iframeLoaded":3,"./markup":5}],5:[function(require,module,exports){
+},{"./actions":1,"./getAction":2,"./iframeLoaded":3,"./iframeSettings":4,"./markup":6}],6:[function(require,module,exports){
 // Create markup
 module.exports = function(randomID, actions) {
 
@@ -296,4 +323,4 @@ module.exports = function(randomID, actions) {
   
 }
 
-},{}]},{},[4]);
+},{}]},{},[5]);

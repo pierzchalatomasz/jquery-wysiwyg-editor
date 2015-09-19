@@ -8,6 +8,7 @@ $.fn.wysiwygEditor = function() {
   var actions = require('./actions')
   var markup = require('./markup');
   var iframeLoaded = require('./iframeLoaded');
+  var iframeSettings = require('./iframeSettings');
   var getAction = require('./getAction');
 
   // Hide original textarea
@@ -24,26 +25,17 @@ $.fn.wysiwygEditor = function() {
     var editArea = iframe[0].contentDocument;
 
     // Set iframe width
-    iframe.width(iframe.parent().width());
-    $(window).resize(function() {
-      iframe.width(iframe.parent().width());
-    });
+    iframeSettings.setWidth(iframe);
 
     // Set iframe body to editable
-    $(editArea).designMode = 'on';
-    $(editArea.body).attr('contenteditable', true); // @not working Firefox
-
-    $(editArea.head).append('<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,800" rel="stylesheet" type="text/css">');
+    iframeSettings.setAttributes(editArea);
 
     // Iframe body styles
-    $(editArea.body).css('padding', '15px');
-    $(editArea.body).css('font-family', 'Open Sans, sans-serif');
-    $(editArea.body).css('font-size', '13px');
-    $(editArea.body).css('line-height', '1.6em');
+    iframeSettings.setStylesheet(editArea);
+    iframeSettings.setCss(editArea);
 
     // Copy data from textarea to iframe
     $(editArea.body).html(textarea.val());
-
 
     // Bind click events for toolbar
     $.each(actions, function(i) {
