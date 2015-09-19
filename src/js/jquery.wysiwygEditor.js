@@ -7,14 +7,8 @@ $.fn.wysiwygEditor = function() {
   var randomID = 'wysiwygEditor-' + Math.floor(Math.random() * 1000000);
   var actions = require('./actions')
   var markup = require('./markup');
-
-  // Get action
-  Object.prototype.getAction = function() {
-    if(typeof(this.action) != 'undefined')
-      return this.action;
-    if(typeof(this.title) != 'undefined')
-      return this.title;
-  };
+  var iframeLoaded = require('./iframeLoaded');
+  var getAction = require('./getAction');
 
   // Hide original textarea
   textarea.css('display', 'none');
@@ -23,85 +17,77 @@ $.fn.wysiwygEditor = function() {
   // Create new wysiwygEditor
   textarea.before(markup(randomID, actions));
 
-  var loop = true;
-  while(loop) {
-    if($('iframe').length) {
-      console.log('loaded iframe');
-      $($('iframe')[0].contentDocument).ready(function() {
-        var iframe = $('#' + randomID).find('iframe');
-        var editArea = iframe[0].contentDocument;
+  var iframe = $('#' + randomID).find('iframe');
 
-        // Set iframe width
-        iframe.width(iframe.parent().width());
-        $(window).resize(function() {
-          iframe.width(iframe.parent().width());
-        });
+  iframeLoaded(iframe, function() {
 
-        // Set iframe body to editable
-        $(editArea).designMode = 'on';
-        $(editArea.body).attr('contenteditable', true); // @not working Firefox
+    var editArea = iframe[0].contentDocument;
 
-        $(editArea.head).append('<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,800" rel="stylesheet" type="text/css">');
+    // Set iframe width
+    iframe.width(iframe.parent().width());
+    $(window).resize(function() {
+      iframe.width(iframe.parent().width());
+    });
 
-        // Iframe body styles
-        $(editArea.body).css('padding', '15px');
-        $(editArea.body).css('font-family', 'Open Sans, sans-serif');
-        $(editArea.body).css('font-size', '13px');
-        $(editArea.body).css('line-height', '1.6em');
+    // Set iframe body to editable
+    $(editArea).designMode = 'on';
+    $(editArea.body).attr('contenteditable', true); // @not working Firefox
 
-        // Copy data from textarea to iframe
-        $(editArea.body).html(textarea.val());
+    $(editArea.head).append('<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,800" rel="stylesheet" type="text/css">');
+
+    // Iframe body styles
+    $(editArea.body).css('padding', '15px');
+    $(editArea.body).css('font-family', 'Open Sans, sans-serif');
+    $(editArea.body).css('font-size', '13px');
+    $(editArea.body).css('line-height', '1.6em');
+
+    // Copy data from textarea to iframe
+    $(editArea.body).html(textarea.val());
 
 
-        // Bind click events for toolbar
-        $.each(actions, function(i) {
-          $('#' + randomID).find('.wysiwygEditor-' + actions[i].title).bind('click', function(e) {
-            e.preventDefault();
-            editArea.body.focus();
-            if(typeof(actions[i].value) != 'undefined')
-              editArea.execCommand(actions[i].getAction(), false, prompt(actions[i].desc));
-            else
-              editArea.execCommand(actions[i].getAction(), false, null);
+    // Bind click events for toolbar
+    $.each(actions, function(i) {
+      $('#' + randomID).find('.wysiwygEditor-' + actions[i].title).bind('click', function(e) {
+        e.preventDefault();
+        editArea.body.focus();
+        if(typeof(actions[i].value) != 'undefined')
+          editArea.execCommand(actions[i].getAction(), false, prompt(actions[i].desc));
+        else
+          editArea.execCommand(actions[i].getAction(), false, null);
 
-            $(this).toggleClass('action-active');
+        $(this).toggleClass('action-active');
 
-            backlightActiveTools($(editArea.getSelection().anchorNode).parents());
-          });
-        });
-
-        $('.wysiwygEditor-toolbar').bind('mouseover', function() {
-          editArea.body.blur();
-        });
-
-        // Trigger contentChanged
-        $.each(['click', 'keyup'], function() {
-          $(editArea.body).bind(this, function(e) {
-            if($(this).html() != textarea.val())
-              $(this).trigger('contentChanged');
-
-            // Update footer element indicator
-            var footerElementIndicator = '';
-            var elements = $(editArea.getSelection().anchorNode).parents();
-            for(var i = elements.length - 1; i >= 0; i--) {
-              footerElementIndicator += elements[i].nodeName;
-              if(i != 0)
-                footerElementIndicator+= ' &raquo; ';
-            }
-            $('#' + randomID).find('.wysiwygEditor-footer').html(footerElementIndicator);
-            // console.log(footerElementIndicator.split(' &raquo; '));
-
-            backlightActiveTools(elements);
-          });
-        });
-
-        // Textarea synchronization
-        $(editArea.body).on('contentChanged', function() {
-          textarea.val($(this).html());
-        });
+        backlightActiveTools($(editArea.getSelection().anchorNode).parents());
       });
-      loop = false;
-    }
-  }
+    });
+
+    // Trigger contentChanged
+    $.each(['click', 'keyup'], function() {
+      $(editArea.body).bind(this, function(e) {
+        if($(this).html() != textarea.val())
+          $(this).trigger('contentChanged');
+
+        // Update footer element indicator
+        var footerElementIndicator = '';
+        var elements = $(editArea.getSelection().anchorNode).parents();
+        for(var i = elements.length - 1; i >= 0; i--) {
+          footerElementIndicator += elements[i].nodeName;
+          if(i != 0)
+            footerElementIndicator+= ' &raquo; ';
+        }
+        $('#' + randomID).find('.wysiwygEditor-footer').html(footerElementIndicator);
+        // console.log(footerElementIndicator.split(' &raquo; '));
+
+        backlightActiveTools(elements);
+      });
+
+    });
+
+    // Textarea synchronization
+    $(editArea.body).on('contentChanged', function() {
+      textarea.val($(this).html());
+    });
+  });
 
   function backlightActiveTools(elements) {
     $.each(actions, function() {
