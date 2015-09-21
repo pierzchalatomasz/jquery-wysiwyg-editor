@@ -10,6 +10,7 @@ $.fn.wysiwygEditor = function() {
   var iframeLoaded = require('./iframeLoaded');
   var iframeSettings = require('./iframeSettings');
   var getAction = require('./getAction');
+  var backlightActiveTools = require('./backlightActiveTools');
 
   // Hide original textarea
   textarea.css('display', 'none');
@@ -43,13 +44,13 @@ $.fn.wysiwygEditor = function() {
         e.preventDefault();
         editArea.body.focus();
         if(typeof(actions[i].value) != 'undefined')
-          editArea.execCommand(actions[i].getAction(), false, prompt(actions[i].desc));
+          editArea.execCommand(getAction(actions[i]), false, prompt(actions[i].desc));
         else
-          editArea.execCommand(actions[i].getAction(), false, null);
+          editArea.execCommand(getAction(actions[i]), false, null);
 
         $(this).toggleClass('action-active');
 
-        backlightActiveTools($(editArea.getSelection().anchorNode).parents());
+        backlightActiveTools(randomID, $(editArea.getSelection().anchorNode).parents(), actions);
       });
     });
 
@@ -70,7 +71,7 @@ $.fn.wysiwygEditor = function() {
         $('#' + randomID).find('.wysiwygEditor-footer').html(footerElementIndicator);
         // console.log(footerElementIndicator.split(' &raquo; '));
 
-        backlightActiveTools(elements);
+        backlightActiveTools(randomID, elements, actions);
       });
 
     });
@@ -80,25 +81,6 @@ $.fn.wysiwygEditor = function() {
       textarea.val($(this).html());
     });
   });
-
-  function backlightActiveTools(elements) {
-    $.each(actions, function() {
-      var action = this;
-      var match = false;
-      $.each(elements, function() {
-        var nodeName = this.nodeName;
-        // Align property style name
-        if(this.nodeName === 'DIV')
-          nodeName = this.style.textAlign;
-        if(typeof(action.nodeName) != 'undefined' && action.nodeName === nodeName)
-          match = true;
-      });
-      if(match)
-        $('#' + randomID).find('.wysiwygEditor-' + action.title).addClass('action-active');
-      else
-        $('#' + randomID).find('.wysiwygEditor-' + action.title).removeClass('action-active');
-    });
-  }
 
   return this;
 }

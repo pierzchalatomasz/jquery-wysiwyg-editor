@@ -1,11 +1,10 @@
 // Get action
-module.exports = function() {
+module.exports = function(element) {
 
-  Object.prototype.getAction = function() {
-    if(typeof(this.action) != 'undefined')
-      return this.action;
-    if(typeof(this.title) != 'undefined')
-      return this.title;
-  };
+    if(typeof(element.action) != 'undefined')
+      return element.action;
+      
+    if(typeof(element.title) != 'undefined')
+      return element.title;
 
 };
