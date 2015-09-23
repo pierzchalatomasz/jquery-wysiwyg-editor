@@ -4,6 +4,7 @@ module.exports = function(randomID, elements, actions) {
   $.each(actions, function() {
     var action = this;
     var match = false;
+
     $.each(elements, function() {
       var nodeName = this.nodeName;
       // Align property style name
@@ -12,6 +13,7 @@ module.exports = function(randomID, elements, actions) {
       if(typeof(action.nodeName) != 'undefined' && action.nodeName === nodeName)
         match = true;
     });
+
     if(match)
       $('#' + randomID).find('.wysiwygEditor-' + action.title).addClass('action-active');
     else

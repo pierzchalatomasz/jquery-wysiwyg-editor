@@ -131,6 +131,32 @@ module.exports = function(randomID, elements, actions) {
 };
 
 },{}],3:[function(require,module,exports){
+module.exports = function(randomID, editArea, getAction, backlightActiveTools, actions) {
+
+  $.each(actions, function(i) {
+
+    $('#' + randomID).find('.wysiwygEditor-' + actions[i].title).bind('click', function(e) {
+
+      e.preventDefault();
+      editArea.body.focus();
+
+      if(typeof(actions[i].value) != 'undefined')
+        editArea.execCommand(getAction(actions[i]), false, prompt(actions[i].desc));
+
+      else
+        editArea.execCommand(getAction(actions[i]), false, null);
+
+      $(this).toggleClass('action-active');
+
+      backlightActiveTools(randomID, $(editArea.getSelection().anchorNode).parents(), actions);
+      
+    });
+
+  });
+
+};
+
+},{}],4:[function(require,module,exports){
 // Get action
 module.exports = function(element) {
 
@@ -142,7 +168,7 @@ module.exports = function(element) {
 
 };
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 // iframeLoaded
 module.exports = function(element, callback) {
 
@@ -159,7 +185,7 @@ module.exports = function(element, callback) {
 
 }
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 // iframeSettings
 exports.setAttributes = function(editArea) {
 
@@ -193,7 +219,7 @@ exports.setWidth = function(iframe) {
 
 };
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 $.fn.wysiwygEditor = function() {
 
   'use strict'
@@ -207,6 +233,8 @@ $.fn.wysiwygEditor = function() {
   var iframeSettings = require('./iframeSettings');
   var getAction = require('./getAction');
   var backlightActiveTools = require('./backlightActiveTools');
+  var bindClickToolbar = require('./bindClickToolbar.js');
+  var triggerContentChanged = require('./triggerContentChanged.js');
 
   // Hide original textarea
   textarea.css('display', 'none');
@@ -235,53 +263,23 @@ $.fn.wysiwygEditor = function() {
     $(editArea.body).html(textarea.val());
 
     // Bind click events for toolbar
-    $.each(actions, function(i) {
-      $('#' + randomID).find('.wysiwygEditor-' + actions[i].title).bind('click', function(e) {
-        e.preventDefault();
-        editArea.body.focus();
-        if(typeof(actions[i].value) != 'undefined')
-          editArea.execCommand(getAction(actions[i]), false, prompt(actions[i].desc));
-        else
-          editArea.execCommand(getAction(actions[i]), false, null);
-
-        $(this).toggleClass('action-active');
-
-        backlightActiveTools(randomID, $(editArea.getSelection().anchorNode).parents(), actions);
-      });
-    });
+    bindClickToolbar(randomID, editArea, getAction, backlightActiveTools, actions);
 
     // Trigger contentChanged
-    $.each(['click', 'keyup'], function() {
-      $(editArea.body).bind(this, function(e) {
-        if($(this).html() != textarea.val())
-          $(this).trigger('contentChanged');
-
-        // Update footer element indicator
-        var footerElementIndicator = '';
-        var elements = $(editArea.getSelection().anchorNode).parents();
-        for(var i = elements.length - 1; i >= 0; i--) {
-          footerElementIndicator += elements[i].nodeName;
-          if(i != 0)
-            footerElementIndicator+= ' &raquo; ';
-        }
-        $('#' + randomID).find('.wysiwygEditor-footer').html(footerElementIndicator);
-        // console.log(footerElementIndicator.split(' &raquo; '));
-
-        backlightActiveTools(randomID, elements, actions);
-      });
-
-    });
+    triggerContentChanged(randomID, editArea, backlightActiveTools);
 
     // Textarea synchronization
     $(editArea.body).on('contentChanged', function() {
       textarea.val($(this).html());
     });
+
   });
 
   return this;
+  
 }
 
-},{"./actions":1,"./backlightActiveTools":2,"./getAction":3,"./iframeLoaded":4,"./iframeSettings":5,"./markup":7}],7:[function(require,module,exports){
+},{"./actions":1,"./backlightActiveTools":2,"./bindClickToolbar.js":3,"./getAction":4,"./iframeLoaded":5,"./iframeSettings":6,"./markup":8,"./triggerContentChanged.js":9}],8:[function(require,module,exports){
 // Create markup
 module.exports = function(randomID, actions) {
 
@@ -326,4 +324,34 @@ module.exports = function(randomID, actions) {
   
 }
 
-},{}]},{},[6]);
+},{}],9:[function(require,module,exports){
+module.exports = function(randomID, editArea, backlightActiveTools) {
+
+  $.each(['click', 'keyup'], function() {
+
+    $(editArea.body).bind(this, function(e) {
+
+      if($(this).html() != textarea.val())
+        $(this).trigger('contentChanged');
+
+      // Update footer element indicator
+      var footerElementIndicator = '';
+      var elements = $(editArea.getSelection().anchorNode).parents();
+
+      for(var i = elements.length - 1; i >= 0; i--) {
+        footerElementIndicator += elements[i].nodeName;
+        if(i != 0)
+          footerElementIndicator+= ' &raquo; ';
+      }
+
+      $('#' + randomID).find('.wysiwygEditor-footer').html(footerElementIndicator);
+
+      backlightActiveTools(randomID, elements, actions);
+
+    });
+
+  });
+
+};
+
+},{}]},{},[7]);
