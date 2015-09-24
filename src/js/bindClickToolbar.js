@@ -16,7 +16,7 @@ module.exports = function(randomID, editArea, getAction, backlightActiveTools, a
       $(this).toggleClass('action-active');
 
       backlightActiveTools(randomID, $(editArea.getSelection().anchorNode).parents(), actions);
-      
+
     });
 
   });

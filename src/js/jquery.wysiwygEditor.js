@@ -44,7 +44,7 @@ $.fn.wysiwygEditor = function() {
     bindClickToolbar(randomID, editArea, getAction, backlightActiveTools, actions);
 
     // Trigger contentChanged
-    triggerContentChanged(randomID, editArea, backlightActiveTools);
+    triggerContentChanged(randomID, editArea, textarea, backlightActiveTools, actions);
 
     // Textarea synchronization
     $(editArea.body).on('contentChanged', function() {
@@ -54,5 +54,5 @@ $.fn.wysiwygEditor = function() {
   });
 
   return this;
-  
+
 }

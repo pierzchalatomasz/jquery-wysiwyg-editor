@@ -18,6 +18,7 @@ var actions = [
   },
   {
     title: 'underline',
+    nodeName: 'U',
     break: true
   },
   {
@@ -43,11 +44,13 @@ var actions = [
   },
   {
     title: 'list-ol',
-    action: 'insertOrderedList'
+    action: 'insertOrderedList',
+    nodeName: 'OL'
   },
   {
     title: 'list-ul',
     action: 'insertUnorderedList',
+    nodeName: 'UL',
     break: true
   },
   {
@@ -114,14 +117,24 @@ module.exports = function(randomID, elements, actions) {
   $.each(actions, function() {
     var action = this;
     var match = false;
+
     $.each(elements, function() {
       var nodeName = this.nodeName;
       // Align property style name
       if(this.nodeName === 'DIV')
         nodeName = this.style.textAlign;
+      // Unordered List and Ordered List
+      if(this.nodeName === 'LI') {
+        if(this.parents().find('ul'))
+          nodeName = 'UL';
+        else
+          nodeName = 'OL';
+      }
+
       if(typeof(action.nodeName) != 'undefined' && action.nodeName === nodeName)
         match = true;
     });
+
     if(match)
       $('#' + randomID).find('.wysiwygEditor-' + action.title).addClass('action-active');
     else
@@ -149,7 +162,7 @@ module.exports = function(randomID, editArea, getAction, backlightActiveTools, a
       $(this).toggleClass('action-active');
 
       backlightActiveTools(randomID, $(editArea.getSelection().anchorNode).parents(), actions);
-      
+
     });
 
   });
@@ -266,7 +279,7 @@ $.fn.wysiwygEditor = function() {
     bindClickToolbar(randomID, editArea, getAction, backlightActiveTools, actions);
 
     // Trigger contentChanged
-    triggerContentChanged(randomID, editArea, backlightActiveTools);
+    triggerContentChanged(randomID, editArea, textarea, backlightActiveTools, actions);
 
     // Textarea synchronization
     $(editArea.body).on('contentChanged', function() {
@@ -276,7 +289,7 @@ $.fn.wysiwygEditor = function() {
   });
 
   return this;
-  
+
 }
 
 },{"./actions":1,"./backlightActiveTools":2,"./bindClickToolbar.js":3,"./getAction":4,"./iframeLoaded":5,"./iframeSettings":6,"./markup":8,"./triggerContentChanged.js":9}],8:[function(require,module,exports){
@@ -325,11 +338,11 @@ module.exports = function(randomID, actions) {
 }
 
 },{}],9:[function(require,module,exports){
-module.exports = function(randomID, editArea, backlightActiveTools) {
+module.exports = function(randomID, editArea, textarea, backlightActiveTools, actions) {
 
   $.each(['click', 'keyup'], function() {
 
-    $(editArea.body).bind(this, function(e) {
+    $(editArea.body).bind(this.toString(), function(e) {
 
       if($(this).html() != textarea.val())
         $(this).trigger('contentChanged');

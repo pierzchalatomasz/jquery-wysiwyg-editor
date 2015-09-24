@@ -10,6 +10,14 @@ module.exports = function(randomID, elements, actions) {
       // Align property style name
       if(this.nodeName === 'DIV')
         nodeName = this.style.textAlign;
+      // Unordered List and Ordered List
+      if(this.nodeName === 'LI') {
+        if(this.parents().find('ul'))
+          nodeName = 'UL';
+        else
+          nodeName = 'OL';
+      }
+
       if(typeof(action.nodeName) != 'undefined' && action.nodeName === nodeName)
         match = true;
     });

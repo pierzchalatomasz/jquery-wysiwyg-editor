@@ -1,8 +1,8 @@
-module.exports = function(randomID, editArea, backlightActiveTools) {
+module.exports = function(randomID, editArea, textarea, backlightActiveTools, actions) {
 
   $.each(['click', 'keyup'], function() {
 
-    $(editArea.body).bind(this, function(e) {
+    $(editArea.body).bind(this.toString(), function(e) {
 
       if($(this).html() != textarea.val())
         $(this).trigger('contentChanged');
