@@ -7,16 +7,10 @@ module.exports = function(randomID, elements, actions) {
 
     $.each(elements, function() {
       var nodeName = this.nodeName;
+
       // Align property style name
-      if(this.nodeName === 'DIV')
+      if(this.style.textAlign != '')
         nodeName = this.style.textAlign;
-      // Unordered List and Ordered List
-      if(this.nodeName === 'LI') {
-        if(this.parents().find('ul'))
-          nodeName = 'UL';
-        else
-          nodeName = 'OL';
-      }
 
       if(typeof(action.nodeName) != 'undefined' && action.nodeName === nodeName)
         match = true;

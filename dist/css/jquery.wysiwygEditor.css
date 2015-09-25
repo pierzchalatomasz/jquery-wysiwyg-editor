@@ -7,6 +7,9 @@
   border: 1px solid #e1e1e1;
   width: 100%;
 }
+.wysiwygEditor-wrapper * {
+  box-sizing: border-box;
+}
 .wysiwygEditor-wrapper .wysiwygEditor-toolbar {
   padding: 15px;
 }
@@ -17,6 +20,7 @@
   text-align: left;
 }
 .wysiwygEditor-wrapper .wysiwygEditor-toolbar ul li {
+  position: relative;
   display: inline-block;
   padding: 0 5px;
 }

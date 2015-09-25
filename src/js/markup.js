@@ -39,5 +39,5 @@ module.exports = function(randomID, actions) {
   markup += '</div>';
 
   return markup;
-  
+
 }

@@ -17,6 +17,7 @@ var actions = [
   },
   {
     title: 'underline',
+    nodeName: 'U',
     break: true
   },
   {
@@ -42,11 +43,13 @@ var actions = [
   },
   {
     title: 'list-ol',
-    action: 'insertOrderedList'
+    action: 'insertOrderedList',
+    nodeName: 'OL'
   },
   {
     title: 'list-ul',
     action: 'insertUnorderedList',
+    nodeName: 'UL',
     break: true
   },
   {
@@ -97,10 +100,12 @@ var actions = [
     break: true
   },
   {
-    title: 'subscript'
+    title: 'subscript',
+    nodeName: 'SUB'
   },
   {
-    title: 'superscript'
+    title: 'superscript',
+    nodeName: 'SUP'
   }
 ];
 

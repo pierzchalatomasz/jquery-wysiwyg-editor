@@ -20,11 +20,9 @@ $.fn.wysiwygEditor = function() {
 
   // Create new wysiwygEditor
   textarea.before(markup(randomID, actions));
-
   var iframe = $('#' + randomID).find('iframe');
 
   iframeLoaded(iframe, function() {
-
     var editArea = iframe[0].contentDocument;
 
     // Set iframe width
@@ -50,9 +48,7 @@ $.fn.wysiwygEditor = function() {
     $(editArea.body).on('contentChanged', function() {
       textarea.val($(this).html());
     });
-
   });
 
   return this;
-
 }
