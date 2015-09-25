@@ -64,48 +64,6 @@ var actions = [
     action: 'insertImage',
     value: true,
     desc: 'Insert image URL',
-    newRow: true
-  },
-  {
-    title: 'copy'
-  },
-  {
-    title: 'paste',
-    break: true
-  },
-  {
-    title: 'font'
-  },
-  {
-    title: 'text-height'
-  },
-  {
-    title: 'square',
-    action: 'foreColor',
-    value: true,
-    desc: 'Choose the color',
-    break: true
-  },
-  {
-    title: 'header',
-    action: 'formatBlock',
-    value: true,
-    desc: 'Which heading? H1, H2, H3, H4, H5, H6'
-  },
-  {
-    title: 'paragraph'
-  },
-  {
-    title: 'minus',
-    break: true
-  },
-  {
-    title: 'subscript',
-    nodeName: 'SUB'
-  },
-  {
-    title: 'superscript',
-    nodeName: 'SUP'
   }
 ];
 

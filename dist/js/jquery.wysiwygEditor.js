@@ -65,48 +65,6 @@ var actions = [
     action: 'insertImage',
     value: true,
     desc: 'Insert image URL',
-    newRow: true
-  },
-  {
-    title: 'copy'
-  },
-  {
-    title: 'paste',
-    break: true
-  },
-  {
-    title: 'font'
-  },
-  {
-    title: 'text-height'
-  },
-  {
-    title: 'square',
-    action: 'foreColor',
-    value: true,
-    desc: 'Choose the color',
-    break: true
-  },
-  {
-    title: 'header',
-    action: 'formatBlock',
-    value: true,
-    desc: 'Which heading? H1, H2, H3, H4, H5, H6'
-  },
-  {
-    title: 'paragraph'
-  },
-  {
-    title: 'minus',
-    break: true
-  },
-  {
-    title: 'subscript',
-    nodeName: 'SUB'
-  },
-  {
-    title: 'superscript',
-    nodeName: 'SUP'
   }
 ];
 
@@ -141,33 +99,25 @@ module.exports = function(randomID, elements, actions) {
 
 },{}],3:[function(require,module,exports){
 module.exports = function(randomID, editArea, getAction, backlightActiveTools, actions) {
+
   $.each(actions, function(i) {
-    var callback = function(title) {
-      $('#' + randomID).find('.wysiwygEditor-' + title).bind('click', function(e) {
-        e.preventDefault();
-        editArea.body.focus();
+    $('#' + randomID).find('.wysiwygEditor-' + actions[i].title).bind('click', function(e) {
+      e.preventDefault();
+      editArea.body.focus();
 
-        if(typeof(actions[i].value) != 'undefined') {
-          var value = prompt(actions[i].desc);
-          if(value != null)
-            editArea.execCommand(getAction(actions[i]), false, value);
-        } else {
-          editArea.execCommand(getAction(actions[i]), false, null);
-        }
+      if(typeof(actions[i].value) != 'undefined') {
+        var value = prompt(actions[i].desc);
+        if(value != null)
+          editArea.execCommand(getAction(actions[i]), false, value);
+      } else {
+        editArea.execCommand(getAction(actions[i]), false, null);
+      }
 
-        $(this).toggleClass('action-active');
-        backlightActiveTools(randomID, $(editArea.getSelection().anchorNode).parents(), actions);
-      });
-    };
-
-    // if(typeof(actions[i].children) != 'undefined') {
-    //   $.each(actions[i].children, function() {
-    //     callback(this);
-    //   });
-    // } else {
-      callback(actions[i].title);
-    // }
+      $(this).toggleClass('action-active');
+      backlightActiveTools(randomID, $(editArea.getSelection().anchorNode).parents(), actions);
+    });
   });
+  
 };
 
 },{}],4:[function(require,module,exports){
@@ -311,13 +261,6 @@ module.exports = function(randomID, actions) {
     if(typeof(actions[i].break) != 'undefined') {
       markup +=     '<li class="break">|</li>'
     }
-
-    // New row
-    if(typeof(actions[i].newRow) != 'undefined') {
-      markup +=     '</ul>';
-      markup +=     '<div style="height: 1px; background: #e1e1e1; margin: 10px 0;"></div>';
-      markup +=     '<ul>';
-    }
   });
 
   markup +=     '</ul>';
@@ -338,9 +281,7 @@ module.exports = function(randomID, actions) {
 module.exports = function(randomID, editArea, textarea, backlightActiveTools, actions) {
 
   $.each(['click', 'keyup'], function() {
-
     $(editArea.body).bind(this.toString(), function(e) {
-
       if($(this).html() != textarea.val())
         $(this).trigger('contentChanged');
 
@@ -357,9 +298,7 @@ module.exports = function(randomID, editArea, textarea, backlightActiveTools, ac
       $('#' + randomID).find('.wysiwygEditor-footer').html(footerElementIndicator);
 
       backlightActiveTools(randomID, elements, actions);
-
     });
-
   });
 
 };

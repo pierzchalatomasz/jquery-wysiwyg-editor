@@ -1,9 +1,7 @@
 module.exports = function(randomID, editArea, textarea, backlightActiveTools, actions) {
 
   $.each(['click', 'keyup'], function() {
-
     $(editArea.body).bind(this.toString(), function(e) {
-
       if($(this).html() != textarea.val())
         $(this).trigger('contentChanged');
 
@@ -20,9 +18,7 @@ module.exports = function(randomID, editArea, textarea, backlightActiveTools, ac
       $('#' + randomID).find('.wysiwygEditor-footer').html(footerElementIndicator);
 
       backlightActiveTools(randomID, elements, actions);
-
     });
-
   });
 
 };

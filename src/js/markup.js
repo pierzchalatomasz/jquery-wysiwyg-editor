@@ -19,13 +19,6 @@ module.exports = function(randomID, actions) {
     if(typeof(actions[i].break) != 'undefined') {
       markup +=     '<li class="break">|</li>'
     }
-
-    // New row
-    if(typeof(actions[i].newRow) != 'undefined') {
-      markup +=     '</ul>';
-      markup +=     '<div style="height: 1px; background: #e1e1e1; margin: 10px 0;"></div>';
-      markup +=     '<ul>';
-    }
   });
 
   markup +=     '</ul>';
